@@ -17,8 +17,9 @@ export default function Navbar() {
           background: '#C9A84C',
           borderRadius: '10px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '21px', fontWeight: 800, color: '#0D1F3C',
-        }}>G</div>
+         // fontSize: '15px', fontWeight: 800, color: '#abf7b6',
+          fontSize: '15px', fontWeight: 800, color: '#0D1F3C',
+        }}>GM</div>
         <div>
           <div style={{ fontSize: '17px', fontWeight: 700, color: '#FFFFFF' }}>
             GrowMoney
