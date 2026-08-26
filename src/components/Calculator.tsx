@@ -67,7 +67,7 @@ export default function Calculator() {
   const yearlyData = getYearlyData(monthly, rate, years)
 
   // MAX VALUE for bar width calculation
-  const maxMaturity = yearlyData[yearlyData.length - 1]?.maturity || 1
+  // const maxMaturity = yearlyData[yearlyData.length - 1]?.maturity || 1
 
   // CANVAS REF for donut chart
   const canvasRef = useRef<HTMLCanvasElement>(null)
