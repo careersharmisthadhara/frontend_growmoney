@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
+
 // ─────────────────────────────────────────────
 // SIP FORMULA
 // M = P × {[(1 + r)^n – 1] / r} × (1 + r)
@@ -59,6 +60,36 @@ export default function Calculator() {
   const [years,   setYears]   = useState(10)
   const [name,    setName]    = useState('')
   const [email,   setEmail]   = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+
+  // API CALL
+ const handleCalculate = async () => {
+  setLoading(true)
+  setError(null)
+  setSaved(false)
+  try {
+    const response = await fetch(
+      'https://0ce2l39sif.execute-api.ap-south-1.amazonaws.com/calculate',
+      {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monthly, rate, years, name, email }),
+      }
+    )
+    const data = await response.json()
+    if (data.success) {
+      setSaved(true)  // ← show success message
+    } else {
+      setError('Calculation failed. Please try again.')
+    }
+  } catch (err) {
+    setError('Network error. Please check your connection.')
+  } finally {
+    setLoading(false)
+  }
+}
 
   // CALCULATED RESULTS
   const { maturity, invested, returns } = calculateSIP(monthly, rate, years)
@@ -251,24 +282,45 @@ export default function Calculator() {
 
           {/* Calculate button */}
           <button
-            onClick={() => alert('Coming soon — API integration next!')}
+            onClick={handleCalculate}
+            disabled={loading}
             style={{
-              width:        '100%',
-              padding:      '13px',
-              borderRadius: '10px',
-              border:       'none',
-              background:   '#0D1F3C',
-              color:        '#C9A84C',
-              fontSize:     '14px',
-              fontWeight:   700,
-              cursor:       'pointer',
-              marginTop:    '1.25rem',
-              fontFamily:   'inherit',
-              letterSpacing:'0.2px',
-            }}
-          >
-            Calculate my returns
+            width:         '100%',
+            padding:       '13px',
+            borderRadius:  '10px',
+            border:        'none',
+            background:    loading ? '#6B7280' : '#0D1F3C',
+            color:         '#C9A84C',
+            fontSize:      '14px',
+            fontWeight:    700,
+            cursor:        loading ? 'not-allowed' : 'pointer',
+            marginTop:     '1.25rem',
+            fontFamily:    'inherit',
+            letterSpacing: '0.2px',
+              }}
+              >
+            {loading ? 'Calculating...' : 'Calculate my returns'}
           </button>
+
+          {error && (
+            <p style={{ color: 'red', fontSize: '13px', marginTop: '8px' }}>
+              {error}
+            </p>
+          )}
+
+          {saved && (
+            <p style={{
+              color:        '#16a34a',
+              fontSize:     '13px',
+              marginTop:    '8px',
+              background:   '#f0fdf4',
+              padding:      '8px 12px',
+              borderRadius: '8px',
+              border:       '1px solid #bbf7d0',
+            }}>
+              ✓ Calculation saved successfully!
+            </p>
+          )}
 
         </div>
 
